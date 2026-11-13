@@ -1,0 +1,1283 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<link rel="icon" href="data:," />
+<title>Trắc nghiệm Logic Chương 3-4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#050a26;
+    --bg2:#0a1440;
+    --panel:#101c56;
+    --panel2:#16236b;
+    --line:#2c3d96;
+    --ink:#f4f6ff;
+    --muted:#b9c2ee;
+    --gold:#ffc21f;
+    --gold2:#ffdf6b;
+    --gold-deep:#c98f00;
+    --good:#2ecc71;
+    --good-bg:#0d4d2a;
+    --bad:#ff5252;
+    --bad-bg:#5c1220;
+    --radius:16px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:"Be Vietnam Pro", system-ui, sans-serif;
+    background:
+      radial-gradient(1100px 500px at 50% -120px, #1b2f8f 0%, rgba(27,47,143,0) 60%),
+      linear-gradient(180deg, var(--bg2) 0%, var(--bg) 340px);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap{ max-width:760px; margin:0 auto; padding:20px 16px 56px; }
+  .hidden{ display:none !important; }
+
+  /* ---------- Home ---------- */
+  .hero{ text-align:center; padding:14px 6px 6px; }
+  .hero .subject{
+    display:inline-block; font-size:.85rem; font-weight:700; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--gold2);
+    border:1px solid var(--gold-deep); border-radius:999px; padding:7px 16px;
+    background:rgba(255,194,31,.08);
+  }
+  .hero h1{ font-size:2rem; line-height:1.2; font-weight:900; margin:16px 0 8px; }
+  .hero h1 .hl{ color:var(--gold); }
+  .hero p{ color:var(--muted); font-size:1.05rem; line-height:1.55; margin:0 auto; max-width:560px; }
+  .hero .counts{ margin-top:14px; color:var(--muted); font-size:.95rem; }
+  .hero .counts b{ color:var(--ink); }
+
+  .card{
+    background:linear-gradient(180deg, var(--panel2), var(--panel));
+    border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; margin-top:22px;
+  }
+  .card h2{ margin:0 0 6px; font-size:1.2rem; font-weight:800; }
+  .card .desc{ color:var(--muted); font-size:1rem; line-height:1.55; margin:0 0 16px; }
+
+  .scope-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .scope-btn{
+    font:inherit; cursor:pointer; text-align:left;
+    background:#0a1440; color:var(--ink);
+    border:2px solid var(--line); border-radius:14px;
+    padding:14px 16px; min-height:64px;
+  }
+  .scope-btn .t{ display:block; font-weight:700; font-size:1.02rem; }
+  .scope-btn .s{ display:block; color:var(--muted); font-size:.88rem; margin-top:3px; line-height:1.4; }
+  .scope-btn[aria-pressed="true"]{ border-color:var(--gold); background:rgba(255,194,31,.12); }
+  .scope-btn[aria-pressed="true"] .t{ color:var(--gold2); }
+
+  .mode-btn{
+    font:inherit; cursor:pointer; width:100%; text-align:left;
+    display:flex; gap:16px; align-items:center;
+    border-radius:14px; padding:18px; min-height:84px;
+    border:2px solid transparent;
+  }
+  .mode-btn + .mode-btn{ margin-top:12px; }
+  .mode-btn .ic{ flex:0 0 auto; width:52px; height:52px; display:grid; place-items:center; border-radius:12px; }
+  .mode-btn .ic svg{ width:30px; height:30px; }
+  .mode-btn .t{ display:block; font-size:1.25rem; font-weight:800; }
+  .mode-btn .s{ display:block; font-size:.98rem; line-height:1.5; margin-top:4px; opacity:.92; }
+  .mode-exam{
+    background:linear-gradient(135deg, #ffcf3d, #f5a623);
+    color:#231a00;
+    box-shadow:0 10px 28px rgba(245,166,35,.28);
+  }
+  .mode-exam .ic{ background:rgba(35,26,0,.14); color:#231a00; }
+  .mode-practice{
+    background:#0a1440; color:var(--ink); border-color:var(--line);
+  }
+  .mode-practice .ic{ background:rgba(255,194,31,.12); color:var(--gold); }
+  .mode-practice .s{ color:var(--muted); }
+
+  details.ref{ margin-top:22px; border:1px solid var(--line); border-radius:var(--radius); background:rgba(10,20,64,.55); }
+  details.ref summary{
+    cursor:pointer; padding:18px 20px; font-weight:800; font-size:1.08rem; min-height:56px;
+    list-style:none; display:flex; align-items:center; gap:10px;
+  }
+  details.ref summary::-webkit-details-marker{ display:none; }
+  details.ref summary .chev{ margin-left:auto; color:var(--gold); transition:transform .2s; }
+  details.ref[open ] summary .chev{ transform:rotate(180deg); }
+  .ref-body{ padding:0 20px 20px; }
+  .ref-body h3{ margin:20px 0 8px; font-size:1.02rem; color:var(--gold2); }
+  .ref-body h3:first-child{ margin-top:2px; }
+  .ref-body p{ color:var(--muted); line-height:1.55; margin:6px 0; font-size:.97rem; }
+  .ref-body ul{ color:var(--muted); line-height:1.6; margin:6px 0; padding-left:20px; font-size:.97rem; }
+  .tblwrap{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; margin:8px 0 4px; }
+  table{ border-collapse:collapse; width:100%; min-width:520px; font-size:.95rem; }
+  th,td{ padding:10px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ background:rgba(255,194,31,.10); color:var(--gold2); font-weight:700; white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+  td.c, th.c{ text-align:center; }
+  .plus{ color:var(--good); font-weight:800; }
+  .minus{ color:var(--bad); font-weight:800; }
+
+  /* ---------- Quiz ---------- */
+  .qtop{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .qmode{
+    font-size:.85rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+    padding:7px 13px; border-radius:999px; border:1px solid var(--gold-deep);
+    color:var(--gold2); background:rgba(255,194,31,.08);
+  }
+  .qcount{ font-weight:700; font-size:1.05rem; }
+  .qwrong{ margin-left:auto; color:var(--muted); font-size:.95rem; }
+  .qwrong b{ color:var(--bad); }
+  .bar{ height:10px; border-radius:99px; background:#0a1440; border:1px solid var(--line); margin-top:12px; overflow:hidden; }
+  .bar > div{ height:100%; width:0%; background:linear-gradient(90deg, var(--gold-deep), var(--gold)); border-radius:99px; transition:width .35s ease; }
+  .ladder{ display:flex; gap:5px; margin-top:12px; flex-wrap:wrap; }
+  .ladder span{
+    flex:1 1 0; min-width:14px; height:8px; border-radius:99px; background:#1a2a75;
+  }
+  .ladder span.done{ background:var(--good); }
+  .ladder span.now{ background:var(--gold); box-shadow:0 0 8px rgba(255,194,31,.7); }
+
+  .qcard{
+    margin-top:20px; background:linear-gradient(180deg, var(--panel2), var(--panel));
+    border:1px solid var(--line); border-radius:var(--radius); padding:22px 20px;
+  }
+  .qtag{ font-size:.88rem; font-weight:700; color:var(--gold2); letter-spacing:.06em; text-transform:uppercase; }
+  .qtext{ font-size:1.38rem; line-height:1.5; font-weight:700; margin:10px 0 4px; }
+  .opts{ margin-top:18px; display:grid; gap:12px; }
+  .opt{
+    font:inherit; cursor:pointer; text-align:left; width:100%;
+    display:flex; gap:14px; align-items:flex-start;
+    background:#0a1440; color:var(--ink);
+    border:2px solid var(--line); border-radius:14px;
+    padding:16px; min-height:64px;
+    font-size:1.13rem; line-height:1.45; font-weight:500;
+    transition:border-color .15s, background .15s, transform .1s;
+  }
+  .opt:active{ transform:scale(.99); }
+  .opt .letter{
+    flex:0 0 auto; width:36px; height:36px; border-radius:50%;
+    display:grid; place-items:center; font-weight:800; font-size:1.05rem;
+    background:var(--panel2); border:2px solid var(--gold-deep); color:var(--gold2);
+    margin-top:1px;
+  }
+  .opt.picked{ border-color:var(--gold); background:rgba(255,194,31,.16); }
+  .opt.correct{ border-color:var(--good); background:var(--good-bg); }
+  .opt.correct .letter{ background:var(--good); border-color:var(--good); color:#04160b; }
+  .opt.wrong{ border-color:var(--bad); background:var(--bad-bg); }
+  .opt.wrong .letter{ background:var(--bad); border-color:var(--bad); color:#1c0308; }
+  .opt.locked{ cursor:default; }
+  .opt.dim{ opacity:.55; }
+  @keyframes shake{ 0%,100%{transform:translateX(0)} 20%{transform:translateX(-9px)} 40%{transform:translateX(9px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)} }
+  .opt.shake{ animation:shake .45s ease; }
+
+  .explain{
+    margin-top:18px; border-radius:14px; padding:16px 18px;
+    background:rgba(255,194,31,.09); border:1px solid var(--gold-deep);
+    font-size:1.05rem; line-height:1.6;
+  }
+  .explain .eh{ font-weight:800; color:var(--gold2); display:block; margin-bottom:5px; }
+  .explain.bad{ background:rgba(255,82,82,.10); border-color:#8c2438; }
+  .explain.bad .eh{ color:#ff9a9a; }
+
+  .next-btn, .primary-btn{
+    font:inherit; cursor:pointer; width:100%; margin-top:18px;
+    background:linear-gradient(135deg, #ffcf3d, #f5a623); color:#231a00;
+    border:none; border-radius:14px; padding:17px; min-height:60px;
+    font-size:1.15rem; font-weight:800;
+  }
+  .ghost-btn{
+    font:inherit; cursor:pointer; width:100%; margin-top:12px;
+    background:transparent; color:var(--muted);
+    border:2px solid var(--line); border-radius:14px; padding:15px; min-height:56px;
+    font-size:1.05rem; font-weight:700;
+  }
+  .quit-row{ margin-top:16px; text-align:center; }
+  .quit-btn{
+    font:inherit; cursor:pointer; background:none; border:none; color:var(--muted);
+    font-size:1rem; padding:12px 18px; min-height:44px; text-decoration:underline;
+  }
+
+  /* ---------- Result ---------- */
+  .result{ text-align:center; padding-top:26px; }
+  .result .big-ic{ width:96px; height:96px; margin:0 auto 8px; display:grid; place-items:center; border-radius:50%;
+    background:rgba(255,194,31,.10); border:2px solid var(--gold-deep); color:var(--gold); }
+  .result .big-ic svg{ width:52px; height:52px; }
+  .result .big-ic.lose{ background:rgba(255,82,82,.08); border-color:#8c2438; color:#ff8f8f; }
+  .result h2{ font-size:2rem; font-weight:900; margin:10px 0 6px; }
+  .result h2.win{ color:var(--gold); }
+  .result p{ color:var(--muted); font-size:1.08rem; line-height:1.6; margin:6px auto; max-width:520px; }
+  .result p b{ color:var(--ink); }
+  .stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px; text-align:left; }
+  .stat{ background:linear-gradient(180deg, var(--panel2), var(--panel)); border:1px solid var(--line); border-radius:14px; padding:16px; }
+  .stat .n{ font-size:1.7rem; font-weight:900; color:var(--gold2); }
+  .stat .l{ color:var(--muted); font-size:.95rem; margin-top:2px; line-height:1.4; }
+  .review{ text-align:left; margin-top:22px; }
+  .review h3{ font-size:1.1rem; margin:0 0 10px; }
+  .review-item{ border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-top:10px; background:rgba(10,20,64,.55); }
+  .review-item .rq{ font-weight:700; line-height:1.5; font-size:1.02rem; }
+  .review-item .ra{ color:var(--good); font-weight:600; margin-top:5px; line-height:1.5; }
+  .review-item .rm{ color:var(--muted); font-size:.92rem; margin-top:3px; }
+  .result-actions{ margin-top:24px; }
+
+  /* ---------- Lưu điểm / tiến độ ---------- */
+  .save-pill{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:.88rem; font-weight:700; line-height:1.35;
+    color:var(--muted); border:1px solid var(--line); border-radius:999px;
+    padding:7px 13px; background:rgba(10,20,64,.55); margin-top:14px;
+  }
+  .save-pill .dot{ flex:0 0 auto; width:9px; height:9px; border-radius:50%; background:#8b96c9; }
+  .save-pill.ok{ color:#b9f5d2; border-color:#1f7a4a; }
+  .save-pill.ok .dot{ background:var(--good); }
+  .save-pill.local{ color:#ffe9a8; border-color:var(--gold-deep); }
+  .save-pill.local .dot{ background:var(--gold); }
+  .save-pill.small{ margin-top:10px; font-size:.84rem; }
+  .resume-box{ margin-top:16px; display:grid; gap:10px; }
+  .resume-item{
+    display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+    border:1px solid var(--gold-deep); border-radius:14px; padding:14px 16px;
+    background:rgba(255,194,31,.08);
+  }
+  .resume-item .rt{ flex:1 1 180px; font-size:.98rem; line-height:1.5; }
+  .resume-item .rt b{ color:var(--gold2); }
+  .resume-btn{
+    font:inherit; cursor:pointer; border:none; border-radius:12px;
+    background:linear-gradient(135deg, #ffcf3d, #f5a623); color:#231a00;
+    font-weight:800; font-size:1rem; padding:13px 18px; min-height:52px;
+  }
+  .scores-list{ margin-top:14px; display:grid; gap:8px; }
+  .score-item{
+    display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;
+    border:1px solid var(--line); border-radius:12px; padding:11px 14px;
+    background:rgba(10,20,64,.55); font-size:.95rem; line-height:1.5;
+  }
+  .score-item .sd{ font-weight:900; color:var(--gold2); font-size:1.08rem; }
+  .score-item .sm{ color:var(--muted); }
+  .saved-empty{ color:var(--muted); font-size:.97rem; line-height:1.55; margin-top:12px; }
+
+  /* ---------- Màn hình khóa ---------- */
+  .lock-card{ max-width:520px; margin-left:auto; margin-right:auto; text-align:center; }
+  .lock-card h2{ font-size:1.35rem; }
+  .lock-input{
+    font:inherit; width:100%; margin-top:6px;
+    background:#0a1440; color:var(--ink);
+    border:2px solid var(--line); border-radius:14px;
+    padding:16px; min-height:60px; font-size:1.15rem; text-align:center;
+  }
+  .lock-input:focus{ outline:none; border-color:var(--gold); }
+  .lock-error{ color:#ff9a9a; font-size:1rem; line-height:1.5; margin:12px 0 0; font-weight:700; }
+  .lock-note{ color:var(--muted); font-size:.9rem; line-height:1.55; margin:14px 0 0; }
+
+  #fw{ position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:60; }
+  .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+
+  @media (max-width:520px){
+    .hero h1{ font-size:1.65rem; }
+    .qtext{ font-size:1.22rem; }
+    .opt{ font-size:1.05rem; }
+    .scope-grid{ grid-template-columns:1fr; }
+    .result h2{ font-size:1.6rem; }
+    table{ min-width:0; font-size:.88rem; }
+    th{ white-space:normal; }
+    th,td{ padding:8px 9px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .opt.shake{ animation:none; }
+    .bar > div{ transition:none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="fw" class="hidden" aria-hidden="true"></canvas>
+<div class="wrap">
+
+  <!-- ================= MÀN HÌNH KHÓA ================= -->
+  <section id="screen-lock" class="hidden">
+    <div class="hero">
+      <span class="subject">Logic học · Ôn tập kiểm tra</span>
+      <h1>Trắc nghiệm <span class="hl">Chương 3 Khái niệm</span><br />&amp; <span class="hl">Chương 4 Phán đoán</span></h1>
+    </div>
+    <div class="card lock-card">
+      <h2>Nhập mã mở đầu</h2>
+      <p class="desc">Nhập mã để vào làm bài.</p>
+      <form id="lock-form" novalidate>
+        <label class="sr" for="lock-input">Mã mở đầu</label>
+        <input class="lock-input" id="lock-input" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Nhập mã mở đầu" />
+        <p class="lock-error hidden" id="lock-error" role="alert">Mã chưa đúng, thử lại</p>
+        <button type="submit" class="primary-btn" id="btn-unlock">Mở</button>
+      </form>
+      <p class="lock-note">Mã mở đầu: chudien — chỉ bạn biết mã này mới vào làm bài được</p>
+    </div>
+  </section>
+
+  <!-- ================= MÀN HÌNH CHÍNH ================= -->
+  <section id="screen-home">
+    <div class="hero">
+      <span class="subject">Logic học · Ôn tập kiểm tra</span>
+      <h1>Trắc nghiệm <span class="hl">Chương 3 Khái niệm</span><br />&amp; <span class="hl">Chương 4 Phán đoán</span></h1>
+      <p>50 câu trắc nghiệm làm từ bộ câu hỏi ôn tập chương 3–4: nội hàm – ngoại diên, quan hệ khái niệm, định nghĩa, phân chia, bốn dạng A – E – I – O, tính chu diên và hình vuông logic.</p>
+      <p class="counts"><b>18</b> câu chương 3 · <b>18</b> câu chương 4 · <b>14</b> câu vận dụng</p>
+    </div>
+
+    <div class="card">
+      <h2>1. Chọn phần ôn</h2>
+      <p class="desc">Mặc định là làm cả 50 câu. Phần chu diên (câu 27–29 trong bộ gốc) nằm trong nhóm Chương 4 và nhóm Vận dụng.</p>
+      <div class="scope-grid" role="group" aria-label="Chọn phần ôn">
+        <button type="button" class="scope-btn" data-scope="all" aria-pressed="true">
+          <span class="t">Tất cả</span><span class="s">50 câu — cả hai chương và vận dụng</span>
+        </button>
+        <button type="button" class="scope-btn" data-scope="c3" aria-pressed="false">
+          <span class="t">Chương 3 · Khái niệm</span><span class="s">18 câu lý thuyết</span>
+        </button>
+        <button type="button" class="scope-btn" data-scope="c4" aria-pressed="false">
+          <span class="t">Chương 4 · Phán đoán</span><span class="s">18 câu lý thuyết — có chu diên, hình vuông logic</span>
+        </button>
+        <button type="button" class="scope-btn" data-scope="vd" aria-pressed="false">
+          <span class="t">Vận dụng</span><span class="s">14 câu tình huống có sẵn tình huống như đề thi</span>
+        </button>
+      </div>
+
+      <h2 style="margin-top:26px;">2. Chọn chế độ</h2>
+      <button type="button" class="mode-btn mode-exam" id="btn-exam">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a1 1 0 0 0-1 1c0 2 1.5 3.5 4 3.5"/><path d="M17 6h3a1 1 0 0 1 1 1c0 2-1.5 3.5-4 3.5"/></svg></span>
+        <span><span class="t">Chế độ Thi — kiểu Triệu phú</span>
+        <span class="s">Không có quyền trợ giúp. Sai một câu là dừng cuộc chơi. Đúng hết thì thắng: pháo hoa đầy màn hình và nhạc chúc mừng.</span></span>
+      </button>
+      <button type="button" class="mode-btn mode-practice" id="btn-practice">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        <span><span class="t">Chế độ Luyện tập — đúng mới qua câu</span>
+        <span class="s">Bấm sai thì ở nguyên câu đó và hiện giải thích. Chỉ khi bấm đúng mới qua được câu tiếp theo. Cuối buổi sẽ liệt kê các câu bạn từng bấm sai để ôn lại.</span></span>
+      </button>
+    </div>
+
+    <div class="card" id="saved-card">
+      <h2>Tiến độ &amp; điểm đã lưu</h2>
+      <p class="desc">Mỗi câu trả lời đều tự lưu lại. Làm dở thì lần sau mở lên bấm làm tiếp là được; làm xong một lượt thì điểm được ghi lại ở dưới.</p>
+      <div><span class="save-pill" id="home-save-status"><span class="dot"></span><span id="home-save-text">Đang kiểm tra tiến độ đã lưu…</span></span></div>
+      <div class="resume-box" id="resume-area"></div>
+      <div id="scores-area"><p class="saved-empty">Đang tải điểm các lần làm trước…</p></div>
+    </div>
+
+    <details class="ref">
+      <summary>Bảng tra nhanh: chu diên · hình vuông logic · phép toán
+        <span class="chev" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></span>
+      </summary>
+      <div class="ref-body">
+        <h3>1. Bốn dạng phán đoán và tính chu diên</h3>
+        <div class="tblwrap"><table>
+          <tr><th>Dạng</th><th>Cấu trúc</th><th>Ví dụ</th><th class="c">S</th><th class="c">P</th></tr>
+          <tr><td><b>A</b> — Chung khẳng định</td><td>Mọi S là P</td><td>Mọi kim loại đều dẫn điện</td><td class="c plus">+</td><td class="c minus">−</td></tr>
+          <tr><td><b>E</b> — Chung phủ định</td><td>Mọi S không là P</td><td>Mọi chất điện môi đều không dẫn điện</td><td class="c plus">+</td><td class="c plus">+</td></tr>
+          <tr><td><b>I</b> — Riêng khẳng định</td><td>Một số S là P</td><td>Một số kim loại là kim loại kiềm</td><td class="c minus">−</td><td class="c minus">−</td></tr>
+          <tr><td><b>O</b> — Riêng phủ định</td><td>Một số S không là P</td><td>Một số sinh viên không là đảng viên</td><td class="c minus">−</td><td class="c plus">+</td></tr>
+        </table></div>
+        <p>Nhớ nhanh: chủ từ — chung thì +, riêng thì −. Vị từ — phủ định thì +, khẳng định thì −. Ngoại lệ: dạng A có P+ khi S đồng nhất P (ví dụ “Mọi số chẵn đều chia hết cho 2”); dạng I có P+ khi S bao hàm P.</p>
+
+        <h3>2. Hình vuông logic — suy giá trị như thế nào</h3>
+        <div class="tblwrap"><table>
+          <tr><th>Quan hệ</th><th>Cặp</th><th>Đặc điểm cần thuộc</th></tr>
+          <tr><td>Phụ thuộc</td><td>A–I, E–O</td><td>Bao hàm đúng → phụ thuộc đúng. Phụ thuộc sai → bao hàm sai. Chiều ngược lại không suy được.</td></tr>
+          <tr><td>Đối lập chung</td><td>A–E</td><td>Có thể cùng sai, không thể cùng đúng. Một đúng → kia sai. Một sai → kia chưa xác định.</td></tr>
+          <tr><td>Đối lập riêng</td><td>I–O</td><td>Có thể cùng đúng, không thể cùng sai. Một sai → kia đúng. Một đúng → kia chưa xác định.</td></tr>
+          <tr><td>Mâu thuẫn</td><td>A–O, E–I</td><td>Không cùng đúng, không cùng sai. Một đúng → kia sai; một sai → kia đúng. Suy được cả hai chiều.</td></tr>
+        </table></div>
+
+        <h3>3. Bảng giá trị của các phép toán logic</h3>
+        <div class="tblwrap"><table>
+          <tr><th class="c">p</th><th class="c">q</th><th class="c">p ∨ q (tuyển)</th><th class="c">p ∧ q (hội)</th><th class="c">p → q (kéo theo)</th><th class="c">p ↔ q (tương đương)</th></tr>
+          <tr><td class="c">1</td><td class="c">1</td><td class="c">1</td><td class="c">1</td><td class="c">1</td><td class="c">1</td></tr>
+          <tr><td class="c">1</td><td class="c">0</td><td class="c">1</td><td class="c">0</td><td class="c">0</td><td class="c">0</td></tr>
+          <tr><td class="c">0</td><td class="c">1</td><td class="c">1</td><td class="c">0</td><td class="c">1</td><td class="c">0</td></tr>
+          <tr><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c">1</td><td class="c">1</td></tr>
+        </table></div>
+        <p>Ba câu chốt: Hội chỉ đúng khi cả hai cùng đúng. Kéo theo chỉ sai khi cơ sở đúng mà hệ quả sai. Tương đương đúng khi hai thành phần giống nhau. Phủ định đảo 1 thành 0 và 0 thành 1. Riêng tuyển tuyệt đối (“hoặc”) thì đúng khi đúng một thành phần đúng, sai khi hai thành phần cùng giá trị.</p>
+
+        <h3>4. Checklist khi gặp bài tìm lỗi</h3>
+        <ul>
+          <li><b>Định nghĩa:</b> 1) Ngoại diên hai vế có trùng nhau không? 2) Có vòng quanh không? 3) Có chuẩn xác, rõ ràng, duy nhất, có thừa dấu hiệu không? 4) Có dùng phủ định không?</li>
+          <li><b>Phân chia:</b> 1) Gộp các nhóm con có bằng đúng khái niệm ban đầu không? 2) Các nhóm có loại trừ nhau không? 3) Có nhất quán một chuẩn không? 4) Chuẩn có rõ dấu hiệu và mức độ không? 5) Các khoảng có liên tục, không bỏ sót không?</li>
+          <li><b>Chu diên:</b> xác định dạng A/E/I/O trước, tra bảng chu diên, rồi kiểm tra trường hợp đặc biệt đồng nhất hoặc bao hàm trước khi kết luận.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ================= MÀN HÌNH LÀM BÀI ================= -->
+  <section id="screen-quiz" class="hidden">
+    <div class="qtop">
+      <span class="qmode" id="q-mode-label">Thi</span>
+      <span class="qcount" id="q-count">Câu 1/50</span>
+      <span class="qwrong" id="q-wrong"></span>
+    </div>
+    <div class="bar" aria-hidden="true"><div id="q-bar"></div></div>
+    <div class="ladder hidden" id="q-ladder" aria-hidden="true"></div>
+    <div><span class="save-pill small hidden" id="quiz-save-status"><span class="dot"></span><span id="quiz-save-text"></span></span></div>
+
+    <div class="qcard">
+      <div class="qtag" id="q-tag"></div>
+      <div class="qtext" id="q-text"></div>
+      <div class="opts" id="q-opts" role="group" aria-label="Các đáp án"></div>
+      <div class="explain hidden" id="q-explain" aria-live="polite"></div>
+      <button type="button" class="next-btn hidden" id="btn-next">Câu tiếp theo</button>
+    </div>
+    <div class="quit-row"><button type="button" class="quit-btn" id="btn-quit">Dừng làm bài, về màn hình chính</button></div>
+  </section>
+
+  <!-- ================= MÀN HÌNH KẾT QUẢ ================= -->
+  <section id="screen-result" class="hidden">
+    <div class="result">
+      <div class="big-ic" id="r-icon"></div>
+      <h2 id="r-title"></h2>
+      <p id="r-desc"></p>
+      <div class="stat-grid" id="r-stats"></div>
+      <div class="review hidden" id="r-review-wrap">
+        <h3>Các câu cần ôn lại</h3>
+        <div id="r-review"></div>
+      </div>
+      <div class="result-actions">
+        <button type="button" class="primary-btn" id="btn-again">Làm lại phần này</button>
+        <button type="button" class="ghost-btn" id="btn-home">Về màn hình chính</button>
+      </div>
+    </div>
+  </section>
+
+  <p class="sr" aria-live="polite" id="sr-status"></p>
+</div>
+
+<script>
+"use strict";
+/* Bộ câu hỏi chuyển thể trắc nghiệm từ bộ câu hỏi ôn tập tự luận Chương 3–4.
+   set: c3 = Chương 3 (số câu gốc 1–18), c4 = Chương 4 (19–36), vd = Vận dụng (C1–C14).
+   a = vị trí đáp án đúng trong opts (sẽ được xáo trộn khi làm bài). */
+var QUESTIONS = [
+/* ================= CHƯƠNG 3 — KHÁI NIỆM ================= */
+{set:"c3", src:"Câu 1 · Chương 3", q:"Khái niệm là hình thức tư duy phản ánh đối tượng bằng cách nào?",
+ opts:["Bằng toàn bộ mọi dấu hiệu của đối tượng","Bằng các dấu hiệu bản chất của đối tượng","Bằng hình ảnh cảm tính của đối tượng","Bằng cách mô tả chi tiết bề ngoài của đối tượng"], a:1,
+ exp:"Khái niệm chỉ giữ lại dấu hiệu bản chất — dấu hiệu quy định chất lượng của sự vật, thiếu nó thì đối tượng không còn tồn tại (ví dụ ở con người là cấu trúc ADN, cá tính, năng lực chuyên môn). Dấu hiệu không bản chất như màu da, màu tóc, chiều cao chỉ ảnh hưởng chứ không quyết định."},
+{set:"c3", src:"Câu 2 · Chương 3", q:"Phát biểu nào đúng về khái niệm “nhà”?",
+ opts:["Khái niệm “nhà” chính là cái nhà trong thực tế","Khái niệm “nhà” là bức ảnh chụp cái nhà","Khái niệm “nhà” chỉ phản ánh dấu hiệu bản chất, khác với mô tả chỉ liệt kê vài dấu hiệu để hình dung","Khái niệm “nhà” phản ánh toàn bộ dấu hiệu của cái nhà"], a:2,
+ exp:"Khái niệm không phải là đối tượng, không phải hình ảnh của đối tượng và cũng không phải mô tả đối tượng. Mô tả chỉ liệt kê vài dấu hiệu (kích thước, màu sắc…), còn khái niệm chỉ giữ dấu hiệu bản chất và làm bộc lộ bản chất đó."},
+{set:"c3", src:"Câu 3 · Chương 3", q:"Vì sao khái niệm và từ không đồng nhất với nhau?",
+ opts:["Vì mỗi khái niệm chỉ có đúng một từ biểu thị","Vì từ thuộc phạm trù ngôn ngữ, còn khái niệm thuộc phạm trù logic và có nội hàm, ngoại diên","Vì từ không mang ý nghĩa nào","Vì khái niệm không cần từ để biểu thị ra ngoài"], a:1,
+ exp:"Khái niệm là nội dung, đóng vai trò quyết định; từ là hình thức, là vỏ vật chất bộc lộ nội hàm ra ngoài. Một khái niệm có thể có nhiều từ đồng nghĩa (điện áp / điện thế); một từ đồng âm biểu thị nhiều khái niệm khác nhau (từ “hạt”); “công” trong đời sống khác “công” trong vật lý."},
+{set:"c3", src:"Câu 4 · Chương 3", q:"Nội hàm của khái niệm là gì?",
+ opts:["Tập hợp các đối tượng thuộc về khái niệm","Tên gọi của khái niệm","Tập hợp mọi dấu hiệu bản chất của đối tượng được phản ánh trong khái niệm","Số lượng đối tượng thuộc về khái niệm"], a:2,
+ exp:"Nội hàm thể hiện mặt chất của khái niệm — nó trả lời câu hỏi đối tượng là cái gì. Ví dụ nội hàm của “hình chữ nhật” gồm: là hình bình hành, có một góc vuông. Quá trình hình thành khái niệm chính là quá trình hình thành nội hàm, nên không có khái niệm nào không có nội hàm."},
+{set:"c3", src:"Câu 5 · Chương 3", q:"Khái niệm nào sau đây là khái niệm rỗng (ngoại diên không có đối tượng nào)?",
+ opts:["Động cơ điện","Chữ số Ả Rập","Sông Hồng","Động cơ vĩnh cửu"], a:3,
+ exp:"Ngoại diên là tập hợp đối tượng có các dấu hiệu trong nội hàm — nó thể hiện mặt lượng của khái niệm. “Động cơ vĩnh cửu” không có đối tượng nào nên là khái niệm rỗng. So sánh: “chữ số Ả Rập” có đúng 10 phần tử (0–9), “sông Hồng” chỉ có 1 đối tượng."},
+{set:"c3", src:"Câu 6 · Chương 3", q:"Quan hệ giữa nội hàm và ngoại diên của khái niệm là quan hệ gì?",
+ opts:["Quan hệ thuận: nội hàm càng sâu thì ngoại diên càng rộng","Quan hệ ngược: nội hàm càng sâu thì ngoại diên càng hẹp","Hai mặt này không liên quan gì đến nhau","Nội hàm và ngoại diên luôn bằng nhau"], a:1,
+ exp:"Chứng minh bằng chuỗi: “động cơ điện” → “động cơ điện xoay chiều” → “động cơ điện xoay chiều ba pha”. Mỗi lần thêm dấu hiệu bản chất, nội hàm tăng lên và ngoại diên hẹp lại. Nội hàm càng chính xác, sâu sắc thì ngoại diên càng rõ ràng."},
+{set:"c3", src:"Câu 7 · Chương 3", q:"Cặp khái niệm “thầy giáo – học trò” thuộc loại nào khi phân loại khái niệm theo nội hàm?",
+ opts:["Khái niệm cụ thể","Khái niệm phủ định","Khái niệm tương đối","Khái niệm trừu tượng"], a:2,
+ exp:"Khái niệm tương đối chỉ tồn tại trong quan hệ với khái niệm kia: thầy giáo – học trò, vợ – chồng, mẹ – con. Khái niệm tuyệt đối xét độc lập được, ví dụ “rơle nhiệt”, “động cơ đốt trong”."},
+{set:"c3", src:"Câu 8 · Chương 3", q:"Điểm khác nhau quyết định giữa khái niệm chung và khái niệm tập hợp là gì?",
+ opts:["Khái niệm tập hợp luôn có nhiều đối tượng hơn khái niệm chung","Đối tượng của khái niệm chung khi tách ra vẫn giữ đầy đủ đặc trưng của nội hàm; đối tượng của khái niệm tập hợp khi tách ra thì không còn mang đầy đủ đặc trưng đó","Khái niệm chung chỉ gồm một đối tượng duy nhất","Khái niệm tập hợp không có ngoại diên"], a:1,
+ exp:"Khái niệm tập hợp chỉ xác lập khi hợp nhất các đối tượng lại với nhau. Lấy một đối tượng ra khỏi tập hợp thì nó không còn mang đầy đủ đặc trưng của nội hàm tập hợp nữa — đây là điểm phân biệt cốt lõi với khái niệm chung."},
+{set:"c3", src:"Câu 9 · Chương 3", q:"Hai khái niệm “pháp luật” và “kim loại” có quan hệ gì với nhau?",
+ opts:["Hợp nhau","Không hợp nhau","Không so sánh được với nhau","Đồng nhất với nhau"], a:2,
+ exp:"Hai khái niệm so sánh được khi nội hàm có ít nhất một dấu hiệu chung hoặc ngoại diên có ít nhất một đối tượng chung. “Pháp luật” và “kim loại” không có phần chung nào ở cả hai mặt nên không so sánh được."},
+{set:"c3", src:"Câu 10 · Chương 3", q:"Quan hệ giữa hai khái niệm “số chia hết cho 3” và “số chia hết cho 2” là quan hệ gì?",
+ opts:["Đồng nhất","Bao hàm","Giao nhau","Mâu thuẫn"], a:2,
+ exp:"Ngoại diên của chúng chỉ trùng nhau một phần — phần chung là các số chia hết cho 6. Sơ đồ Euler là hai vòng tròn cắt nhau. (Đồng nhất: hai vòng trùng nhau; bao hàm: vòng nhỏ nằm trong vòng lớn, ví dụ “số chẵn” trong “số tự nhiên”.)"},
+{set:"c3", src:"Câu 11 · Chương 3", q:"Điểm phân biệt giữa quan hệ đối lập và quan hệ mâu thuẫn là gì?",
+ opts:["Đối lập: tổng ngoại diên bằng ngoại diên của loài; mâu thuẫn: tổng ngoại diên nhỏ hơn","Đối lập: tổng ngoại diên nhỏ hơn ngoại diên của loài; mâu thuẫn: tổng ngoại diên bằng đúng ngoại diên của loài","Hai quan hệ này hoàn toàn giống nhau","Quan hệ đối lập chỉ áp dụng cho màu sắc"], a:1,
+ exp:"“Trắng – đen” trong “màu sắc” là đối lập vì còn nhiều màu khác, tổng ngoại diên nhỏ hơn loài. “Lịch sự – không lịch sự” là mâu thuẫn: nội hàm phủ định lẫn nhau và tổng ngoại diên bằng đúng ngoại diên của loài."},
+{set:"c3", src:"Câu 12 · Chương 3", q:"Giới hạn cuối cùng của thao tác mở rộng khái niệm là gì?",
+ opts:["Khái niệm đơn nhất","Khái niệm rỗng","Phạm trù","Khái niệm tập hợp"], a:2,
+ exp:"Mở rộng là bỏ bớt dấu hiệu bản chất khỏi nội hàm (ví dụ “động cơ đốt trong bốn kỳ” bỏ “bốn kỳ”). Giới hạn cuối của mở rộng là phạm trù — khái niệm có ngoại diên rộng nhất và nội hàm nghèo nhất. Ngược lại, giới hạn cuối của thu hẹp là khái niệm đơn nhất."},
+{set:"c3", src:"Câu 13 · Chương 3", q:"Trong cấu trúc định nghĩa A ≡ B, thành phần B là gì?",
+ opts:["Khái niệm được định nghĩa","Khái niệm dùng để định nghĩa","Chuẩn phân chia","Lượng từ của phán đoán"], a:1,
+ exp:"A là khái niệm được định nghĩa, B là khái niệm dùng để định nghĩa. Ví dụ “Dòng điện là dòng chuyển dời có hướng của các hạt mang điện”: A là “dòng điện”, B là phần còn lại của định nghĩa."},
+{set:"c3", src:"Câu 14 · Chương 3", q:"Định nghĩa theo tập hợp có công thức nào sau đây?",
+ opts:["Khái niệm chủng = khái niệm loài gần nhất + dấu hiệu đặc thù của chủng","Khái niệm loài = khái niệm chủng + dấu hiệu đặc thù","Đặt một tên mới cho đối tượng có mặt tại chỗ","Liệt kê toàn bộ đối tượng của khái niệm"], a:0,
+ exp:"Gọi là định nghĩa theo tập hợp vì khái niệm được định nghĩa bị bao hàm trong một tập hợp lớn hơn là khái niệm loài, rồi được tách ra bằng dấu hiệu đặc thù. Điều kiện: phải tồn tại khái niệm loài gần nhất — vì vậy không định nghĩa theo tập hợp được khi khái niệm cần định nghĩa là một phạm trù."},
+{set:"c3", src:"Câu 15 · Chương 3", q:"Bốn quy tắc định nghĩa khái niệm gồm những quy tắc nào?",
+ opts:["Bao hàm; giao nhau; đối lập; mâu thuẫn","Đồng nhất; nhất quán; rõ ràng; liên tục","Đồng nhất; không vòng quanh; chuẩn xác – rõ ràng – duy nhất; không phủ định","Thu hẹp; mở rộng; phân đôi; liệt kê"], a:2,
+ exp:"Quy tắc 1 đồng nhất: ngoại diên của hai vế phải trùng nhau. Quy tắc 2 không vòng quanh. Quy tắc 3 chuẩn xác, rõ ràng, duy nhất. Quy tắc 4 không phủ định. (Nhất quán, liên tục là từ khoá của quy tắc phân chia, không phải định nghĩa.)"},
+{set:"c3", src:"Câu 16 · Chương 3", q:"Đang phân chia “động cơ điện” theo chuẩn dòng điện mà chen thêm tiêu chuẩn điện áp vào cùng một lần chia là vi phạm quy tắc phân chia nào?",
+ opts:["Quy tắc 1: hợp ngoại diên của các thành phần phải bằng ngoại diên của khái niệm bị phân chia","Quy tắc 2: các thành phần phải loại trừ nhau","Quy tắc 3: phân chia phải nhất quán theo một chuẩn xác định","Quy tắc 5: quá trình phân chia phải liên tục"], a:2,
+ exp:"Mỗi lần phân chia chỉ được dùng một chuẩn xác định. Đang chia theo dòng điện thì không được chen tiêu chuẩn điện áp vào — đó là vi phạm quy tắc 3 trong 5 quy tắc phân chia."},
+{set:"c3", src:"Câu 17 · Chương 3", q:"Bảng tuần hoàn các nguyên tố hoá học là ví dụ của kiểu phân loại nào?",
+ opts:["Phân loại nhân tạo","Phân loại tự nhiên","Phân đôi","Thu hẹp khái niệm"], a:1,
+ exp:"Phân loại tự nhiên sắp xếp đối tượng theo dấu hiệu bản chất, tương đối ổn định: biết đối tượng thuộc nhóm nào (kim loại kiềm, halogen, khí trơ…) thì khẳng định ngay được thuộc tính của nó. Phân loại nhân tạo, như xếp hồ sơ theo chữ cái, chỉ tiện cho tra cứu."},
+{set:"c3", src:"Câu 18 · Chương 3", q:"Thu hẹp khái niệm khác phân chia khái niệm ở điểm nào?",
+ opts:["Hai thao tác này là một, chỉ khác tên gọi","Thu hẹp chuyển sang một khái niệm mới hẹp hơn bằng cách thêm dấu hiệu vào nội hàm; phân chia làm rõ ngoại diên của chính khái niệm ban đầu bằng cách tách nó thành các nhóm con","Phân chia thêm dấu hiệu bản chất vào nội hàm","Thu hẹp tách ngoại diên thành các nhóm con theo một chuẩn"], a:1,
+ exp:"Thu hẹp trả lời câu hỏi “khái niệm này hẹp lại thành khái niệm nào”, còn phân chia trả lời “ngoại diên của khái niệm này gồm những nhóm nào”. Cả hai đều dựa vào quan hệ ngược giữa nội hàm và ngoại diên."},
+
+/* ================= CHƯƠNG 4 — PHÁN ĐOÁN ================= */
+{set:"c4", src:"Câu 19 · Chương 4", q:"Giá trị logic của phán đoán “Mọi nguyên tố hoá học đều có tính phóng xạ” là gì?",
+ opts:["P = 1 (chân thực)","P = 0 (giả dối)","Không xác định được","Vừa đúng vừa sai"], a:1,
+ exp:"Phán đoán chỉ nhận một trong hai giá trị: chân thực P = 1 hoặc giả dối P = 0. Tri thức trong phán đoán mới là giả định, chỉ được thừa nhận là chân thực khi kiểm chứng bằng thực tiễn. Không phải nguyên tố nào cũng có tính phóng xạ nên phán đoán này có P = 0."},
+{set:"c4", src:"Câu 20 · Chương 4", q:"Loại câu nào biểu thị phán đoán?",
+ opts:["Câu hỏi","Câu cảm thán","Câu cầu khiến","Câu trần thuật dưới dạng khẳng định hay phủ định"], a:3,
+ exp:"Mọi phán đoán đều được thể hiện bằng câu, nhưng không phải câu nào cũng biểu thị phán đoán. Câu hỏi, câu cảm thán, câu cầu khiến không khẳng định hay phủ định dấu hiệu nào của đối tượng. Ngoại lệ: câu hỏi tu từ có ý nghĩa phán đoán."},
+{set:"c4", src:"Câu 21 · Chương 4", q:"Phán đoán đơn gồm những thành phần nào?",
+ opts:["Chủ từ và vị từ","Lượng từ, chủ từ S, hệ từ, vị từ P","Liên từ logic và các phán đoán thành phần","Nội hàm và ngoại diên"], a:1,
+ exp:"Lượng từ xác định số lượng đối tượng (“một số”, “mọi”, “tất cả”). Chủ từ S là khái niệm về đối tượng — tri thức đã biết. Hệ từ “là / không là” chỉ rõ tính chất có thuộc chủ từ hay không. Vị từ P là tri thức mới được khẳng định hay phủ định về đối tượng. Cấu trúc tổng quát: S là P / S không là P."},
+{set:"c4", src:"Câu 22 · Chương 4", q:"Phán đoán “Gia tốc là đạo hàm của vận tốc theo thời gian” thuộc loại phán đoán đơn nào?",
+ opts:["Phán đoán thuộc tính","Phán đoán quan hệ","Phán đoán tồn tại","Phán đoán hợp"], a:1,
+ exp:"Phán đoán quan hệ phản ánh mối quan hệ giữa các đối tượng hoặc giữa các dấu hiệu, cấu trúc aRb. Phán đoán thuộc tính có cấu trúc S là P (ví dụ “số π là số vô tỉ”); phán đoán tồn tại phản ánh sự có hay không có của đối tượng (ví dụ “không có dòng điện chạy trong mạch”)."},
+{set:"c4", src:"Câu 23 · Chương 4", q:"Phán đoán “Nước sôi ở 100°C ở áp suất thường” thuộc loại nào theo liên hệ với thực tế?",
+ opts:["Phán đoán khả năng","Phán đoán thực","Phán đoán tất yếu","Phán đoán xác suất"], a:2,
+ exp:"Phán đoán tất yếu phản ánh sự nhất thiết phải tồn tại, thường dùng để nêu định luật, cấu trúc “S phải là P”. Phán đoán khả năng hình thành từ giả thuyết; phán đoán xác suất còn phụ thuộc yếu tố ngẫu nhiên, độ tin cậy thường 95–99% như dự báo thời tiết."},
+{set:"c4", src:"Câu 24 · Chương 4", q:"“Mặt lượng” của phán đoán thuộc tính là gì?",
+ opts:["Sự khẳng định hay phủ định thuộc tính của đối tượng","Số lượng đối tượng trong ngoại diên của chủ từ S tham gia vào phán đoán","Độ tin cậy của phán đoán","Giá trị đúng hoặc sai của phán đoán"], a:1,
+ exp:"Mặt chất là khẳng định hay phủ định thuộc tính; mặt lượng là phán đoán nói về một số hay mọi đối tượng của chủ từ. Kết hợp chất và lượng ta được bốn dạng A – E – I – O. Trường hợp đặc biệt của phán đoán riêng là phán đoán đơn nhất, nói về một đối tượng duy nhất."},
+{set:"c4", src:"Câu 25 · Chương 4", q:"Phán đoán có cấu trúc “Mọi S không là P” thuộc dạng nào?",
+ opts:["A — chung khẳng định","E — chung phủ định","I — riêng khẳng định","O — riêng phủ định"], a:1,
+ exp:"Bốn dạng cơ bản: A “Mọi S là P” (mọi cây xanh đều quang hợp); E “Mọi S không là P”; I “Một số S là P” (một số kim loại là kim loại kiềm); O “Một số S không là P” (một số động cơ điện không là động cơ điện một chiều). Mẹo nhớ: A, I lấy từ nguyên âm của từ khẳng định; E, O từ từ phủ định trong tiếng Latinh."},
+{set:"c4", src:"Câu 26 · Chương 4", q:"Trong phán đoán dạng E, quan hệ về ngoại diên giữa S và P là gì?",
+ opts:["Đồng nhất","Bao hàm","Ngang hàng — tách rời hoàn toàn","Giao nhau"], a:2,
+ exp:"Dạng E: mọi đối tượng của S đều nằm ngoài P, ví dụ “Mọi chất điện môi đều không dẫn điện”. Dạng A: S và P đồng nhất hoặc bao hàm (P bao hàm S). Dạng I và O: giao nhau hoặc bao hàm."},
+{set:"c4", src:"Câu 27 · Chương 4 — chu diên", q:"Một thuật ngữ trong phán đoán đơn được coi là chu diên (+) khi nào?",
+ opts:["Khi phán đoán chỉ nói về một phần ngoại diên của nó","Khi lớp SP trùng với toàn bộ ngoại diên của nó, hoặc tách rời hẳn ngoại diên của nó","Khi thuật ngữ đó đứng ở vị trí chủ từ","Khi phán đoán là phán đoán chung"], a:1,
+ exp:"Chu diên nghĩa là phán đoán nói về toàn bộ ngoại diên của thuật ngữ: hoặc lớp SP trùng với toàn bộ ngoại diên, hoặc SP tách rời hẳn ngoại diên của nó. Không chu diên (−) khi SP chỉ bị bao hàm trong ngoại diên — phán đoán mới nói về một phần. Khi xác định phải xét cả lượng từ và hệ từ."},
+{set:"c4", src:"Câu 28 · Chương 4 — chu diên", q:"Theo bảng chu diên chuẩn, phán đoán dạng O (“Một số S không là P”) có tính chu diên của S và P như thế nào?",
+ opts:["S+, P+","S+, P−","S−, P−","S−, P+"], a:3,
+ exp:"Bảng chu diên phải thuộc: A: S+, P−. E: S+, P+. I: S−, P−. O: S−, P+. Bốn kết luận: chủ từ của phán đoán chung luôn chu diên; chủ từ của phán đoán riêng luôn không chu diên; vị từ của phán đoán phủ định luôn chu diên; vị từ của phán đoán khẳng định chỉ chu diên trong trường hợp đặc biệt."},
+{set:"c4", src:"Câu 29 · Chương 4 — hình vuông logic", q:"Trong hình vuông logic, cặp phán đoán nào có quan hệ mâu thuẫn?",
+ opts:["A – E","I – O","A – O và E – I","A – I và E – O"], a:2,
+ exp:"Mâu thuẫn là quan hệ khác cả chất lẫn lượng: không thể cùng đúng, cũng không thể cùng sai — đây là quan hệ duy nhất suy ra chắc chắn giá trị của phán đoán còn lại theo cả hai chiều. A–E là đối lập chung, I–O là đối lập riêng, A–I và E–O là quan hệ phụ thuộc."},
+{set:"c4", src:"Câu 30 · Chương 4", q:"Phán đoán “Nếu không có năng lượng thì nhân loại không tồn tại” là phán đoán gì?",
+ opts:["Phán đoán đơn","Phán đoán hợp, gồm hai phán đoán thành phần nối bằng liên từ logic","Phán đoán tồn tại","Một khái niệm"], a:1,
+ exp:"Phán đoán hợp được tạo thành từ các phán đoán đơn nhờ liên từ logic; ở đây có hai thành phần: “không có năng lượng” và “nhân loại không tồn tại”. Vì mỗi phán đoán đơn biểu thị bằng một câu đơn nên phán đoán hợp được biểu thị bằng một câu phức hợp."},
+{set:"c4", src:"Câu 31 · Chương 4", q:"Phép hội p ∧ q (“và”) đúng trong trường hợp nào?",
+ opts:["Khi ít nhất một thành phần đúng","Chỉ khi cả p và q đều đúng","Khi cả hai thành phần cùng sai","Khi đúng một thành phần đúng"], a:1,
+ exp:"Hội chỉ đúng khi cả hai thành phần cùng đúng; một thành phần sai là cả phán đoán sai — ví dụ “Lao động là quyền lợi và nghĩa vụ của người công dân”. Ngược lại, tuyển liên kết (“hay”) chỉ sai khi cả hai thành phần cùng sai."},
+{set:"c4", src:"Câu 32 · Chương 4", q:"Theo quy tắc De Morgan, phủ định của phán đoán “p hoặc q” là gì?",
+ opts:["Không p hoặc không q","Không p và không q","p và q","Giữ nguyên “p hoặc q” nhưng đổi giá trị của p"], a:1,
+ exp:"Phủ định một tuyển bằng hội các phủ định của từng thành phần; phủ định một hội bằng tuyển các phủ định. Dễ nhớ: phủ định “p hoặc q” phải nói “không p và không q”; phủ định “p và q” thì nói “không p hoặc không q”."},
+{set:"c4", src:"Câu 33 · Chương 4", q:"Phán đoán kéo theo p → q sai trong trường hợp duy nhất nào?",
+ opts:["Cơ sở sai, hệ quả đúng","Cơ sở sai, hệ quả sai","Cơ sở đúng, hệ quả sai","Cả cơ sở và hệ quả cùng đúng"], a:2,
+ exp:"Trong phép kéo theo, p là cơ sở, q là hệ quả. Ba trường hợp còn lại phán đoán đều đúng; chỉ khi tiền đề đúng mà kết luận sai thì kéo theo mới sai. Ví dụ đúng: “Nếu trời nóng bức thì mực thuỷ ngân trong nhiệt kế dâng cao”."},
+{set:"c4", src:"Câu 34 · Chương 4", q:"Hai phán đoán được gọi là đẳng trị khi nào?",
+ opts:["Khi chúng có cùng chủ từ và vị từ","Khi chúng giống hệt nhau về câu chữ","Khi chúng có cùng giá trị chân thực trong mọi trường hợp","Khi chúng cùng đúng trong một trường hợp cụ thể"], a:2,
+ exp:"Đẳng trị là giống nhau cả về giá trị chân thực, giả dối lẫn thứ tự các giá trị đó trong mọi trường hợp. Ví dụ: phủ định phán đoán A hai lần liên tiếp cho phán đoán đẳng trị với A. Nhờ đẳng trị, cùng một tư tưởng diễn đạt được bằng nhiều cách mà nội dung không đổi."},
+{set:"c4", src:"Câu 35 · Chương 4", q:"Phán đoán “Lao động là quyền lợi và nghĩa vụ của mọi công dân” có công thức (A ∧ B). Cách diễn đạt nào sau đây đẳng trị với nó?",
+ opts:["“Lao động là quyền lợi hoặc là nghĩa vụ của mọi công dân”","“Không thể nói rằng lao động là quyền lợi mà lại không là nghĩa vụ của mọi công dân”","“Nếu lao động là quyền lợi thì nó không cần là nghĩa vụ”","“Lao động không là quyền lợi của mọi công dân”"], a:1,
+ exp:"Theo bảng đẳng trị của giáo trình, (A ∧ B) đẳng trị với dạng phủ định của kéo theo ¬(A → ¬B): “Không thể nói rằng, nếu lao động là quyền lợi thì nó không phải là nghĩa vụ của mọi công dân”, và với dạng tuyển của các phủ định tương đương."},
+{set:"c4", src:"Câu 36 · Chương 4", q:"Điểm khác nhau giữa hình thức tư duy “phán đoán” và một phán đoán cụ thể là gì?",
+ opts:["Không có điểm khác nhau","“Phán đoán” là kết cấu logic chung; một phán đoán cụ thể là tư tưởng xác định, có nội dung xác định và giá trị chân thực hoặc giả dối xác định","Phán đoán cụ thể không có chủ từ và vị từ","Hình thức tư duy “phán đoán” luôn có giá trị sai"], a:1,
+ exp:"Minh hoạ bằng phán đoán “Mọi kim loại đều dẫn điện”: lượng từ là “mọi”, chủ từ S là “kim loại”, hệ từ khẳng định, vị từ P là “dẫn điện”, thuộc dạng A và có giá trị chân thực. Chỉ ra được bốn thành phần và giá trị của nó là thấy rõ sự khác biệt."},
+
+/* ================= VẬN DỤNG ================= */
+{set:"vd", src:"Câu C1 · Vận dụng chương 3", q:"Trong chuỗi “động cơ điện → động cơ điện xoay chiều → động cơ điện xoay chiều ba pha”, nội hàm và ngoại diên thay đổi thế nào?",
+ opts:["Nội hàm giảm dần, ngoại diên tăng dần","Nội hàm tăng dần, ngoại diên giảm dần","Cả nội hàm và ngoại diên cùng tăng","Cả hai đều không thay đổi"], a:1,
+ exp:"Mỗi bước thêm một dấu hiệu bản chất (“dòng xoay chiều”, rồi “ba pha”) làm nội hàm sâu hơn, nên theo quy luật quan hệ ngược, ngoại diên hẹp dần. So với “hình chữ nhật” (nội hàm: hình bình hành, có một góc vuông), khái niệm cuối chuỗi có nội hàm sâu nhất và ngoại diên hẹp nhất."},
+{set:"vd", src:"Câu C2 · Vận dụng chương 3", q:"Quan hệ giữa hai khái niệm “máy tính” và “máy vi tính” là quan hệ gì?",
+ opts:["Giao nhau","Bao hàm — “máy vi tính” bị bao bởi “máy tính”","Đối lập","Đồng nhất"], a:1,
+ exp:"Ngoại diên của “máy vi tính” nằm gọn trong ngoại diên của “máy tính” nên là quan hệ bao hàm (loài – chủng). Trong cùng nhóm bài tập: “số chia hết cho 3” và “số chia hết cho 2” giao nhau; “màu trắng” và “màu đen” đối lập; “lịch sự” và “không lịch sự” mâu thuẫn; “điện tích nguyên tố” và “điện tích của hạt có q = 1,6.10⁻¹⁹ C” đồng nhất."},
+{set:"vd", src:"Câu C3 · Vận dụng chương 3", q:"Thu hẹp khái niệm “số chẵn” bằng cách thêm dấu hiệu “dương”, rồi thêm “nhỏ hơn 10”, ta được tập hợp nào?",
+ opts:["{2, 4, 6, 8, 10}","{0, 2, 4, 6, 8}","{2, 4, 6, 8}","{4, 6, 8, 10}"], a:2,
+ exp:"Thu hẹp là thêm dấu hiệu bản chất vào nội hàm. “Dương” loại số 0 và số âm; “nhỏ hơn 10” loại số 10. Kết quả là tập hữu hạn {2, 4, 6, 8}. Mở rộng làm ngược lại: bỏ dấu hiệu — ví dụ “động cơ đốt trong bốn kỳ” bỏ “bốn kỳ” thành “động cơ đốt trong”."},
+{set:"vd", src:"Câu C4 · Vận dụng — tìm lỗi định nghĩa", q:"Định nghĩa: “Sinh viên là người đang học trong các trường đại học và cao đẳng” — trong khi trường đại học còn đào tạo cả hệ trung cấp chuyên nghiệp và học viên cao học. Định nghĩa này sai ở đâu?",
+ opts:["Vi phạm quy tắc 2 — vòng quanh","Vi phạm quy tắc 4 — dùng phủ định","Vi phạm quy tắc 1 — đồng nhất: ngoại diên của phần dùng để định nghĩa rộng hơn ngoại diên của “sinh viên”","Định nghĩa này hoàn toàn đúng"], a:2,
+ exp:"Phần định nghĩa gộp cả học viên cao học và học sinh trung cấp học trong trường đại học, nên ngoại diên của nó rộng hơn “sinh viên” — vi phạm quy tắc 1 (đồng nhất) theo hướng B rộng hơn A."},
+{set:"vd", src:"Câu C5 · Vận dụng — tìm lỗi định nghĩa", q:"Định nghĩa: “Gương cầu lõm là gương có mặt phản xạ không phải là mặt phẳng” vi phạm quy tắc định nghĩa nào?",
+ opts:["Quy tắc 1 — đồng nhất","Quy tắc 2 — không vòng quanh","Quy tắc 3 — chuẩn xác, rõ ràng","Quy tắc 4 — không phủ định"], a:3,
+ exp:"Định nghĩa bằng cách nói “không phải là” không vạch được nội hàm: gương cầu lồi cũng có mặt phản xạ không phải là mặt phẳng. Ngoại lệ được phép dùng định nghĩa phủ định khi đối tượng không có dấu hiệu nào chung với các đối tượng còn lại, ví dụ “khí trơ là nguyên tố hoá học không tham gia phản ứng hoá học với các nguyên tố khác”."},
+{set:"vd", src:"Câu C6 · Vận dụng — tìm lỗi định nghĩa", q:"Cặp định nghĩa “Lực hướng tâm là lực gây ra gia tốc hướng tâm” và “Gia tốc hướng tâm là gia tốc do lực hướng tâm gây ra” mắc lỗi gì?",
+ opts:["Định nghĩa quá rộng","Vòng quanh — vi phạm quy tắc 2","Định nghĩa phủ định","Thừa dấu hiệu suy ra được"], a:1,
+ exp:"A được định nghĩa qua B, B lại được định nghĩa qua A nên không khái niệm nào được làm rõ cả. Muốn sửa phải chọn một khái niệm đã rõ ràng làm điểm tựa, không quay lại khái niệm đang cần định nghĩa."},
+{set:"vd", src:"Câu C7 · Vận dụng — phân chia", q:"Đang phân chia “máy công cụ” theo chuẩn “mức độ tự động hoá” (vạn năng, bán tự động, tự động) mà xếp thêm “máy tiện” vào cùng danh sách thì vi phạm quy tắc phân chia nào?",
+ opts:["Quy tắc 1 — hợp ngoại diên của các thành phần","Quy tắc 3 — phân chia phải nhất quán theo một chuẩn xác định","Quy tắc 4 — chuẩn phải rõ ràng","Quy tắc 5 — phân chia phải liên tục"], a:1,
+ exp:"“Máy tiện” thuộc chuẩn khác là “phương pháp gia công” (tiện, phay, bào, khoan, doa). Giáo trình nêu ba chuẩn chia “máy công cụ”: mức độ tự động hoá; tính chất công việc (gia công thô, gia công tinh); phương pháp gia công. Trộn hai chuẩn trong một lần chia là vi phạm quy tắc 3."},
+{set:"vd", src:"Câu C8 · Vận dụng chương 4", q:"Phán đoán “Mọi chất điện môi đều không dẫn điện” thuộc dạng nào, với S và P là gì?",
+ opts:["Dạng A; S = “chất điện môi”, P = “dẫn điện”","Dạng E; S = “chất điện môi”, P = “dẫn điện”","Dạng O; S = “chất điện môi”, P = “không dẫn điện”","Dạng I; S = “mọi chất điện môi”, P = “dẫn điện”"], a:1,
+ exp:"Lượng từ “mọi” (chung) + hệ từ phủ định → dạng E. Cùng nhóm bài tập: “Mọi kim loại đều dẫn điện” là A; “Một số kim loại là kim loại kiềm” là I; “Một số động cơ điện không là động cơ điện một chiều” là O; “Số π là số vô tỉ” là phán đoán đơn nhất — trường hợp đặc biệt của phán đoán riêng."},
+{set:"vd", src:"Câu C9 · Vận dụng — chu diên", q:"Phán đoán “Mọi số chẵn đều chia hết cho 2” có tính chu diên của S và P như thế nào, và vì sao khác đáp án quen thuộc của dạng A?",
+ opts:["S+, P− — như mọi phán đoán dạng A khác","S+, P+ — vì ở đây S và P đồng nhất với nhau","S−, P+ — vì đây là phán đoán riêng","S−, P− — vì cả hai đều không chu diên"], a:1,
+ exp:"Đây là trường hợp đặc biệt của dạng A: “số chẵn” và “số chia hết cho 2” là một, phán đoán nói về toàn bộ ngoại diên của cả S lẫn P nên P cũng chu diên. Đây là cái bẫy hay gặp nhất ở phần chu diên. Nhắc lại các trường hợp thường: A bao hàm: S+, P−; I giao nhau: S−, P−; O: S−, P+."},
+{set:"vd", src:"Câu C10 · Vận dụng — hình vuông logic", q:"Biết phán đoán A “Mọi kim loại đều dẫn điện” là ĐÚNG. Giá trị của E, I, O (cùng chủ từ và vị từ) lần lượt là gì?",
+ opts:["E đúng, I sai, O đúng","E sai, I đúng, O sai","E chưa xác định, I đúng, O sai","Cả E, I, O đều đúng"], a:1,
+ exp:"A đúng → E sai (đối lập chung: không thể cùng đúng); I đúng (quan hệ phụ thuộc: bao hàm đúng thì phụ thuộc đúng); O sai (mâu thuẫn: một đúng thì một sai). Ngược lại, nếu A sai thì O chắc chắn đúng, còn E và I chưa xác định được."},
+{set:"vd", src:"Câu C11 · Vận dụng — bảng giá trị", q:"Cho p đúng (1), q sai (0). Giá trị của p → q và p ↔ q lần lượt là gì?",
+ opts:["1 và 1","1 và 0","0 và 1","0 và 0"], a:3,
+ exp:"p → q = 0: đây là trường hợp duy nhất làm kéo theo sai — cơ sở đúng mà hệ quả sai. p ↔ q = 0 vì hai thành phần khác giá trị nhau. Hoàn thiện thêm: p ∨ q = 1; p ∧ q = 0; q → p = 1; phủ định của p = 0."},
+{set:"vd", src:"Câu C12 · Vận dụng — tuyển", q:"Câu “Trong tam giác vuông ABC, hoặc góc A vuông, hoặc góc B vuông, hoặc góc C vuông” là phép tuyển nào, và đúng khi nào?",
+ opts:["Tuyển liên kết — đúng khi ít nhất một thành phần đúng","Tuyển tuyệt đối — đúng khi đúng một thành phần đúng, sai khi các thành phần cùng đúng hoặc cùng sai","Phép hội — đúng khi mọi thành phần đều đúng","Tuyển tuyệt đối — chỉ sai khi mọi thành phần cùng sai"], a:1,
+ exp:"“Hoặc” là tuyển tuyệt đối: tam giác chỉ có một góc vuông nên chỉ được chọn một. Ngược lại “hay” là tuyển liên kết, cho phép cả hai cùng đúng — “Lợi nhuận tăng nhờ tăng năng suất lao động hay nhờ giảm chi phí sản xuất”, và chỉ sai khi cả hai thành phần cùng sai."},
+{set:"vd", src:"Câu C13 · Vận dụng — đẳng trị", q:"Phán đoán (A ∧ B) “Lao động là quyền lợi và nghĩa vụ của mọi công dân” được diễn đạt lại đẳng trị bằng cách nào?",
+ opts:["Đổi liên từ “và” thành “hoặc”","Dùng dạng phủ định của kéo theo: “Không thể nói rằng lao động là quyền lợi mà lại không là nghĩa vụ của mọi công dân”","Phủ định đồng thời cả hai thành phần","Đảo ngược chủ từ và vị từ của phán đoán"], a:1,
+ exp:"Đẳng trị nghĩa là cùng giá trị chân thực trong mọi trường hợp, nên thay cách diễn đạt mà giá trị nội dung của tư tưởng vẫn giữ nguyên. (A ∧ B) đẳng trị với dạng phủ định của kéo theo và với các dạng trong bảng đẳng trị của giáo trình."},
+{set:"vd", src:"Câu C14 · Vận dụng tổng hợp", q:"Cho S = “kim loại”, P = “chất dẫn điện”. Kết luận nào sau đây đúng cho phán đoán A “Mọi kim loại đều dẫn điện” khi biết nó đúng?",
+ opts:["Hai khái niệm quan hệ giao nhau; trong A: S−, P−; E đúng","Hai khái niệm quan hệ đồng nhất; trong A: S+, P+; I sai","Hai khái niệm quan hệ bao hàm; trong A: S+, P−; suy ra E sai, I đúng, O sai","Hai khái niệm quan hệ đối lập; không xác định được chu diên"], a:2,
+ exp:"Tổng hợp hai chương: ngoại diên “kim loại” nằm trong ngoại diên “chất dẫn điện” nên là quan hệ bao hàm. Dạng A có S+, P−. A đúng thì theo hình vuông logic: E sai (đối lập chung), I đúng (phụ thuộc), O sai (mâu thuẫn)."}
+];
+
+var SET_NAMES = { c3:"Chương 3 · Khái niệm", c4:"Chương 4 · Phán đoán", vd:"Vận dụng" };
+var LETTERS = ["A","B","C","D"];
+
+/* ---------------- Lưu điểm + tiến độ qua Google Sheets (Apps Script) ---------------- */
+var BRIDGE_URL = "https://script.google.com/macros/s/AKfycbyvc_2rsEeLzGJboqqvN_HSBx-4d-El5RiR6JD2m0l_1BF6VuQkLkChcOeWHXm6X68F5Q/exec";
+var BRIDGE_TOKEN = "e1cf678099ccf36fdc71bf32";
+var BRIDGE_USER = "me";
+function bridgeGetUrl(base){ return base + (base.indexOf("?") >= 0 ? "&" : "?") + "token=" + encodeURIComponent(BRIDGE_TOKEN); }
+function isUnauthorized(data){
+  if (!data || typeof data !== "object") return false;
+  var msg = String(data.error || data.message || data.status || "");
+  return data.error === "unauthorized" || data.status === "unauthorized" || /unauthor/i.test(msg);
+}
+function showUnauthorized(){ setSaveStatus("local", "Chưa lưu được lên Sheets, đã lưu tạm trên máy"); }
+var PHAN_LABEL = { all:"Tất cả", c3:"Chương 3", c4:"Chương 4", vd:"Vận dụng" };
+var SCOPE_TOTAL = { all:50, c3:18, c4:18, vd:14 };
+function cheDoFor(mode){ return mode === "exam" ? "Thi" : "Luyện tập"; }
+function phanFor(scope){ return PHAN_LABEL[scope] || PHAN_LABEL.all; }
+function storageKey(mode, scope){ return "logicQuizProgress_v1_" + mode + "_" + scope; }
+function pendingKey(){ return "logicQuizPendingSync_v1"; }
+
+function setSaveStatus(kind, text){
+  [["home-save-status","home-save-text"],["quiz-save-status","quiz-save-text"]].forEach(function(pair){
+    var pill = document.getElementById(pair[0]), tx = document.getElementById(pair[1]);
+    if (!pill || !tx) return;
+    pill.classList.remove("hidden");
+    pill.classList.toggle("ok", kind === "ok");
+    pill.classList.toggle("local", kind === "local");
+    tx.textContent = text;
+  });
+}
+function readPending(){
+  try { var v = JSON.parse(localStorage.getItem(pendingKey()) || "[]"); return Array.isArray(v) ? v : []; }
+  catch(e){ return []; }
+}
+function writePending(arr){
+  try { if (arr.length) localStorage.setItem(pendingKey(), JSON.stringify(arr)); else localStorage.removeItem(pendingKey()); } catch(e){}
+}
+function queuePending(payload){
+  var arr = readPending();
+  // Với progress, chỉ giữ bản mới nhất của cùng chế độ + phần để tránh dồn ứ
+  if (payload.type === "progress"){
+    arr = arr.filter(function(p){ return !(p.type === "progress" && p.che_do === payload.che_do && p.phan === payload.phan); });
+  }
+  arr.push(payload); writePending(arr);
+}
+function postBridge(payload){
+  // Mọi POST đều gửi kèm token trong JSON.
+  var body = {};
+  for (var k in payload) body[k] = payload[k];
+  body.token = BRIDGE_TOKEN;
+  // no-cors: không đọc được phản hồi, fetch không lỗi = coi như đã gửi tới Sheets.
+  // Mạng lỗi thì fetch văng lỗi -> giữ lại trên máy để đồng bộ sau.
+  // Trường hợp unauthorized được phát hiện qua các lần GET đọc lại (xem isUnauthorized).
+  return fetch(BRIDGE_URL, {
+    method: "POST", mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(body)
+  }).then(function(){ return true; }).catch(function(){ return false; });
+}
+function sendPayload(payload, isProgress){
+  setSaveStatus("local", "Đã lưu trên máy, đang đồng bộ…");
+  postBridge(payload).then(function(sent){
+    if (sent){
+      // Gửi được thì bỏ bản chờ tương ứng (nếu có)
+      if (isProgress){
+        var rest = readPending().filter(function(p){ return !(p.type === "progress" && p.che_do === payload.che_do && p.phan === payload.phan); });
+        writePending(rest);
+      }
+      setSaveStatus("ok", "Đã lưu lên Sheets");
+    } else {
+      queuePending(payload);
+      setSaveStatus("local", "Đã lưu trên máy, sẽ đồng bộ sau");
+    }
+  });
+}
+function trySyncPending(){
+  var arr = readPending(); if (!arr.length) return;
+  var chain = Promise.resolve();
+  var remaining = [];
+  arr.forEach(function(p){
+    chain = chain.then(function(){
+      return postBridge(p).then(function(sent){ if (!sent) remaining.push(p); });
+    });
+  });
+  chain.then(function(){
+    writePending(remaining);
+    if (!remaining.length && arr.length) setSaveStatus("ok", "Đã lưu lên Sheets");
+  });
+}
+function collectWrongSrcs(){
+  var out = [];
+  state.list.forEach(function(it, i){ if (it.wrongs > 0) out.push("Câu " + (i + 1) + " (" + it.src + ")"); });
+  return out.join(", ");
+}
+function saveLocalSnapshot(resumeIdx){
+  var key = storageKey(state.mode, state.scope);
+  try {
+    if (resumeIdx < 0 || resumeIdx >= state.list.length){ localStorage.removeItem(key); return; }
+    localStorage.setItem(key, JSON.stringify({
+      mode: state.mode, scope: state.scope, idx: resumeIdx,
+      correctCount: state.correctCount, totalWrongs: state.totalWrongs,
+      list: state.list, savedAt: Date.now()
+    }));
+  } catch(e){}
+}
+function readLocalSnapshot(mode, scope){
+  try {
+    var v = JSON.parse(localStorage.getItem(storageKey(mode, scope)) || "null");
+    if (!v || !Array.isArray(v.list) || !v.list.length) return null;
+    if (typeof v.idx !== "number" || v.idx < 0 || v.idx >= v.list.length) return null;
+    return v;
+  } catch(e){ return null; }
+}
+function clearLocalProgress(mode, scope){
+  try { localStorage.removeItem(storageKey(mode || state.mode, scope || state.scope)); } catch(e){}
+}
+/* Gọi sau mỗi lần trả lời 1 câu: wasCorrect = đáp án vừa bấm có đúng không */
+function saveProgressAfterAnswer(wasCorrect){
+  var resumeIdx = wasCorrect ? state.idx + 1 : state.idx;
+  saveLocalSnapshot(resumeIdx);
+  var payload = {
+    type: "progress", user_id: BRIDGE_USER,
+    che_do: cheDoFor(state.mode), phan: phanFor(state.scope),
+    cau_hien_tai: resumeIdx + 1,
+    so_cau_dung: state.correctCount, so_cau_sai: state.totalWrongs,
+    cau_sai: collectWrongSrcs()
+  };
+  sendPayload(payload, true);
+}
+/* Gọi khi làm xong 1 lượt: ghi 1 dòng điểm + xoá tiến độ đang dở */
+function sendScoreAndClear(ketQua){
+  var total = state.list.length;
+  var soDung = state.correctCount;
+  var diem = total ? Math.round(soDung / total * 100) / 10 : 0;
+  var payload = {
+    type: "score",
+    che_do: cheDoFor(state.mode), phan: phanFor(state.scope),
+    tong_cau: total, so_dung: soDung, diem: diem, ket_qua: ketQua
+  };
+  clearLocalProgress(state.mode, state.scope);
+  sendPayload(payload, false);
+  // Đánh dấu trên Sheets là không còn lượt dở (cau_hien_tai = 0) để lần sau không hiện làm tiếp nữa
+  postBridge({
+    type: "progress", user_id: BRIDGE_USER,
+    che_do: payload.che_do, phan: payload.phan,
+    cau_hien_tai: 0, so_cau_dung: soDung, so_cau_sai: state.totalWrongs, cau_sai: collectWrongSrcs()
+  });
+  sheetsProgressCache[state.mode + "_" + state.scope] = null;
+}
+function fetchJSON(url, ms){
+  var ctrl = ("AbortController" in window) ? new AbortController() : null;
+  var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, ms || 9000) : null;
+  return fetch(url, ctrl ? { signal: ctrl.signal } : {}).then(function(r){
+    if (timer) clearTimeout(timer);
+    return r.json();
+  }).catch(function(e){ if (timer) clearTimeout(timer); throw e; });
+}
+function normalizeProgress(data){
+  if (!data) return null;
+  var p = data.progress || data.data || data;
+  if (!p || typeof p !== "object") return null;
+  var cau = parseInt(p.cau_hien_tai, 10);
+  if (isNaN(cau) || cau < 2) return null; // 0/1 = chưa có gì để làm tiếp
+  return {
+    cau_hien_tai: cau,
+    so_cau_dung: parseInt(p.so_cau_dung, 10) || 0,
+    so_cau_sai: parseInt(p.so_cau_sai, 10) || 0,
+    cau_sai: p.cau_sai || ""
+  };
+}
+var sheetsProgressCache = {};
+function fetchSheetsProgress(){
+  var scope = state.scope;
+  ["exam", "practice"].forEach(function(mode){
+    var url = bridgeGetUrl(BRIDGE_URL + "?user_id=" + encodeURIComponent(BRIDGE_USER) +
+      "&che_do=" + encodeURIComponent(cheDoFor(mode)) + "&phan=" + encodeURIComponent(phanFor(scope)));
+    fetchJSON(url).then(function(data){
+      if (isUnauthorized(data)){ showUnauthorized(); sheetsProgressCache[mode + "_" + scope] = null; if (state.scope === scope) renderResumeArea(); return; }
+      sheetsProgressCache[mode + "_" + scope] = normalizeProgress(data);
+      if (state.scope === scope) renderResumeArea();
+    }).catch(function(){
+      sheetsProgressCache[mode + "_" + scope] = null;
+      if (state.scope === scope) renderResumeArea();
+    });
+  });
+}
+function renderResumeArea(){
+  var area = $("resume-area"); if (!area) return;
+  area.innerHTML = "";
+  var scope = state.scope, total = SCOPE_TOTAL[scope] || 50, any = false;
+  ["exam", "practice"].forEach(function(mode){
+    var snap = readLocalSnapshot(mode, scope);
+    var sp = sheetsProgressCache[mode + "_" + scope];
+    var cau = 0, dung = 0, fromSheets = false;
+    if (snap){ cau = snap.idx + 1; dung = snap.correctCount || 0; }
+    else if (sp && sp.cau_hien_tai <= total){ cau = sp.cau_hien_tai; dung = sp.so_cau_dung; fromSheets = true; }
+    if (!cau) return;
+    any = true;
+    var box = document.createElement("div"); box.className = "resume-item";
+    var tx = document.createElement("div"); tx.className = "rt";
+    tx.innerHTML = "<b>" + (mode === "exam" ? "Chế độ Thi" : "Chế độ Luyện tập") + "</b> · " + escapeHTML(phanFor(scope)) +
+      " — đang dở ở câu " + cau + "/" + total + ", đã đúng " + dung + " câu" + (fromSheets ? " (lưu trên Sheets)" : " (lưu trên máy này)") + ".";
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "resume-btn";
+    btn.textContent = "Làm tiếp từ câu " + cau;
+    (function(m, s, sn, pr){
+      btn.addEventListener("click", function(){
+        audio();
+        if (sn) startGame(m, sn);
+        else startGame(m, { sheetsProgress: pr });
+      });
+    })(mode, scope, snap, sp);
+    box.appendChild(tx); box.appendChild(btn);
+    area.appendChild(box);
+  });
+  if (!any){
+    var p = document.createElement("p"); p.className = "saved-empty";
+    p.textContent = "Chưa có lượt làm dở nào ở phần này. Bắt đầu một lượt mới, tiến độ sẽ tự lưu sau mỗi câu.";
+    area.appendChild(p);
+  }
+}
+function fmtTime(v){
+  if (!v) return "";
+  var d = new Date(v);
+  if (isNaN(d.getTime())) return String(v);
+  return d.toLocaleDateString("vi-VN") + " " + d.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+}
+function renderScores(data){
+  var area = $("scores-area"); if (!area) return;
+  var rows = [];
+  if (Array.isArray(data)) rows = data;
+  else if (data && Array.isArray(data.scores)) rows = data.scores;
+  else if (data && Array.isArray(data.data)) rows = data.data;
+  else if (data && Array.isArray(data.rows)) rows = data.rows;
+  if (!rows.length){
+    area.innerHTML = '<p class="saved-empty">Chưa có điểm nào được ghi. Làm xong một lượt, điểm sẽ hiện ở đây.</p>';
+    return;
+  }
+  rows = rows.slice().reverse().slice(0, 8);
+  area.innerHTML = "";
+  var h = document.createElement("h3");
+  h.style.cssText = "margin:18px 0 2px;font-size:1.02rem;color:var(--gold2)";
+  h.textContent = "Điểm các lần làm trước";
+  area.appendChild(h);
+  var list = document.createElement("div"); list.className = "scores-list";
+  rows.forEach(function(r){
+    if (!r || typeof r !== "object") return;
+    var item = document.createElement("div"); item.className = "score-item";
+    var diem = (r.diem !== undefined && r.diem !== null && r.diem !== "") ? r.diem : "—";
+    var meta = [r.che_do, r.phan, (r.so_dung !== undefined ? r.so_dung + "/" + (r.tong_cau || "?") + " câu đúng" : ""), r.ket_qua, fmtTime(r.thoi_gian || r.time || r.date)].filter(function(x){ return x; }).join(" · ");
+    item.innerHTML = '<span class="sd">' + escapeHTML(String(diem)) + ' điểm</span><span class="sm">' + escapeHTML(meta) + "</span>";
+    list.appendChild(item);
+  });
+  area.appendChild(list);
+}
+function fetchScores(){
+  fetchJSON(bridgeGetUrl(BRIDGE_URL + "?action=scores&user_id=" + encodeURIComponent(BRIDGE_USER))).then(function(data){
+    if (isUnauthorized(data)){ showUnauthorized(); renderScores([]); return; }
+    renderScores(data);
+  }).catch(function(){
+    var area = $("scores-area");
+    if (area) area.innerHTML = '<p class="saved-empty">Chưa tải được điểm từ Sheets (có thể do mất mạng). Điểm mới vẫn được lưu trên máy và sẽ đồng bộ sau.</p>';
+  });
+}
+function initSync(){
+  renderResumeArea();
+  trySyncPending();
+  fetchSheetsProgress();
+  fetchScores();
+  window.addEventListener("online", function(){ trySyncPending(); fetchSheetsProgress(); fetchScores(); });
+}
+
+function shuffle(arr){
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+var state = {
+  mode: null,        // "exam" | "practice"
+  scope: "all",
+  list: [],          // [{q, opts(shuffled), correctIdx, src, set, exp, wrongs}]
+  idx: 0,
+  locked: false,
+  correctCount: 0,
+  totalWrongs: 0,
+  finished: false
+};
+
+var $ = function(id){ return document.getElementById(id); };
+var screens = { lock: $("screen-lock"), home: $("screen-home"), quiz: $("screen-quiz"), result: $("screen-result") };
+
+/* ---------------- Mã mở đầu ---------------- */
+var UNLOCK_KEY = "logicQuizUnlocked_v1";
+var UNLOCK_CODE = "chudien";
+var unlocked = false;
+try { unlocked = localStorage.getItem(UNLOCK_KEY) === "1"; } catch(e){ unlocked = false; }
+function show(name){
+  if (!unlocked) name = "lock";
+  screens.lock.classList.toggle("hidden", name !== "lock");
+  screens.home.classList.toggle("hidden", name !== "home");
+  screens.quiz.classList.toggle("hidden", name !== "quiz");
+  screens.result.classList.toggle("hidden", name !== "result");
+  window.scrollTo(0, 0);
+}
+function tryUnlock(){
+  var input = $("lock-input");
+  var val = (input.value || "").replace(/\s+/g, "").toLowerCase();
+  if (val === UNLOCK_CODE){
+    unlocked = true;
+    try { localStorage.setItem(UNLOCK_KEY, "1"); } catch(e){}
+    $("lock-error").classList.add("hidden");
+    show("home");
+    initSync();
+    say("Đã mở. Chọn phần ôn và chế độ để bắt đầu.");
+  } else {
+    $("lock-error").classList.remove("hidden");
+    input.focus();
+    say("Mã chưa đúng, thử lại");
+  }
+}
+function say(msg){ $("sr-status").textContent = msg; }
+
+/* ---------------- Âm thanh (WebAudio, tổng hợp) ---------------- */
+var actx = null;
+function audio(){
+  if (!actx){
+    try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){ actx = null; }
+  }
+  if (actx && actx.state === "suspended") actx.resume();
+  return actx;
+}
+function tone(freq, t0, dur, type, vol, dest){
+  var c = audio(); if (!c) return;
+  var o = c.createOscillator(), g = c.createGain();
+  o.type = type || "triangle"; o.frequency.value = freq;
+  var start = c.currentTime + t0;
+  g.gain.setValueAtTime(0.0001, start);
+  g.gain.exponentialRampToValueAtTime(vol || 0.18, start + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+  o.connect(g); g.connect(dest || c.destination);
+  o.start(start); o.stop(start + dur + 0.05);
+}
+function sndCorrect(){ tone(659.25, 0, .16, "triangle", .16); tone(987.77, .1, .3, "triangle", .16); }
+function sndWrong(){ tone(196, 0, .3, "sawtooth", .07); tone(147, .05, .38, "sawtooth", .07); }
+function sndPick(){ tone(440, 0, .08, "sine", .08); }
+function fanfare(){
+  var c = audio(); if (!c) return;
+  var master = c.createGain(); master.gain.value = 0.9; master.connect(c.destination);
+  var notes = [
+    // [midi, start, dur] — fanfare kiểu hào hùng: C – F – C – G – C cao
+    [60,0,.18],[64,0,.18],[67,0,.18],
+    [72,.16,.34],
+    [65,.55,.16],[69,.55,.16],[72,.55,.3],
+    [76,.9,.5],
+    [67,1.45,.14],[72,1.45,.14],
+    [74,1.62,.5],
+    [72,2.2,.16],[76,2.2,.16],[79,2.2,.16],
+    [84,2.42,1.5],[79,2.42,1.5],[76,2.42,1.5],[72,2.42,1.5]
+  ];
+  notes.forEach(function(n){
+    var f = 440 * Math.pow(2, (n[0] - 69) / 12);
+    tone(f, n[1], n[2], "sawtooth", .055, master);
+    tone(f, n[1], n[2], "square", .028, master);
+    tone(f / 2, n[1], n[2], "triangle", .12, master);
+  });
+  // trống dồn dập ở nhịp cuối
+  for (var i = 0; i < 8; i++) tone(98, 2.2 + i * .07, .09, "sine", .16, master);
+  tone(65, 3.9, .8, "sine", .2, master);
+}
+
+/* ---------------- Pháo hoa (canvas) ---------------- */
+var fw = { run:false, parts:[], rockets:[], raf:null, last:0 };
+function fwStart(){
+  var cv = $("fw"); cv.classList.remove("hidden");
+  cv.width = window.innerWidth; cv.height = window.innerHeight;
+  fw.run = true; fw.parts = []; fw.rockets = []; fw.last = 0;
+  fwLaunch(); fwLoop(0);
+  setTimeout(fwStop, 9000);
+}
+function fwStop(){ fw.run = false; if (fw.raf) cancelAnimationFrame(fw.raf); $("fw").classList.add("hidden"); }
+function fwLaunch(){
+  if (!fw.run) return;
+  var cv = $("fw");
+  fw.rockets.push({ x: cv.width * (0.12 + Math.random() * 0.76), y: cv.height + 6,
+    vy: -(cv.height * 0.011 + Math.random() * 3), vx: (Math.random() - .5) * 1.4,
+    target: cv.height * (0.14 + Math.random() * 0.3),
+    hue: [45, 0, 120, 200, 280, 20][Math.floor(Math.random() * 6)] });
+  setTimeout(fwLaunch, 260 + Math.random() * 480);
+}
+function fwBurst(x, y, hue){
+  for (var i = 0; i < 90; i++){
+    var ang = Math.random() * Math.PI * 2, sp = 1 + Math.random() * 5.2;
+    fw.parts.push({ x:x, y:y, vx:Math.cos(ang) * sp, vy:Math.sin(ang) * sp,
+      life:1, decay:.008 + Math.random() * .012, hue:hue + Math.random() * 30 - 15,
+      size:1.6 + Math.random() * 2.2 });
+  }
+}
+function fwLoop(ts){
+  if (!fw.run) return;
+  var cv = $("fw"), ctx = cv.getContext("2d");
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.fillStyle = "rgba(0,0,0,0.22)"; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.globalCompositeOperation = "lighter";
+  fw.rockets = fw.rockets.filter(function(r){
+    r.x += r.vx; r.y += r.vy; r.vy += 0.03;
+    ctx.beginPath(); ctx.arc(r.x, r.y, 2.4, 0, 7);
+    ctx.fillStyle = "hsl(" + r.hue + ",100%,72%)"; ctx.fill();
+    if (r.y <= r.target || r.vy >= -0.5){ fwBurst(r.x, r.y, r.hue); return false; }
+    return true;
+  });
+  fw.parts = fw.parts.filter(function(p){
+    p.x += p.vx; p.y += p.vy; p.vy += 0.045; p.vx *= 0.985; p.vy *= 0.985; p.life -= p.decay;
+    if (p.life <= 0) return false;
+    ctx.globalAlpha = Math.max(p.life, 0);
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, 7);
+    ctx.fillStyle = "hsl(" + p.hue + ",100%,62%)"; ctx.fill();
+    return true;
+  });
+  ctx.globalAlpha = 1;
+  fw.raf = requestAnimationFrame(fwLoop);
+}
+
+/* ---------------- Bắt đầu / hiển thị câu hỏi ---------------- */
+function buildList(scope){
+  var pool = QUESTIONS.filter(function(q){ return scope === "all" || q.set === scope; });
+  return shuffle(pool).map(function(q){
+    var order = shuffle(q.opts.map(function(_, i){ return i; }));
+    return {
+      src: q.src, set: q.set, q: q.q, exp: q.exp,
+      opts: order.map(function(i){ return q.opts[i]; }),
+      correctIdx: order.indexOf(q.a),
+      wrongs: 0
+    };
+  });
+}
+function startGame(mode, resume){
+  state.mode = mode;
+  if (resume && resume.scope) state.scope = resume.scope;
+  if (resume && Array.isArray(resume.list) && resume.list.length){
+    // Làm tiếp từ bản lưu trên máy: giữ nguyên thứ tự câu và số lần sai của từng câu
+    state.list = resume.list;
+    state.idx = Math.min(Math.max(resume.idx || 0, 0), state.list.length - 1);
+    state.correctCount = resume.correctCount || 0;
+    state.totalWrongs = resume.totalWrongs || 0;
+  } else if (resume && resume.sheetsProgress){
+    // Làm tiếp từ tiến độ trên Sheets: bắt đầu ở đúng câu đã lưu, giữ số câu đã đúng/sai
+    var sp = resume.sheetsProgress;
+    state.list = buildList(state.scope);
+    state.idx = Math.min(Math.max((sp.cau_hien_tai || 1) - 1, 0), state.list.length - 1);
+    state.correctCount = sp.so_cau_dung || 0;
+    state.totalWrongs = sp.so_cau_sai || 0;
+  } else {
+    // Bắt đầu lượt mới: xoá bản dở cũ của đúng chế độ + phần này
+    clearLocalProgress(mode, state.scope);
+    sheetsProgressCache[mode + "_" + state.scope] = null;
+    state.list = buildList(state.scope);
+    state.idx = 0; state.correctCount = 0; state.totalWrongs = 0;
+  }
+  state.finished = false;
+  fwStop();
+  $("q-mode-label").textContent = mode === "exam" ? "Chế độ Thi" : "Chế độ Luyện tập";
+  var ladder = $("q-ladder");
+  if (mode === "exam"){
+    ladder.classList.remove("hidden");
+    ladder.innerHTML = state.list.map(function(){ return "<span></span>"; }).join("");
+  } else ladder.classList.add("hidden");
+  show("quiz");
+  renderQuestion();
+}
+function cur(){ return state.list[state.idx]; }
+
+function renderQuestion(){
+  var item = cur(), total = state.list.length;
+  state.locked = false;
+  $("q-count").textContent = "Câu " + (state.idx + 1) + "/" + total;
+  $("q-bar").style.width = ((state.idx) / total * 100) + "%";
+  $("q-wrong").innerHTML = state.mode === "practice"
+    ? (item.wrongs > 0 ? "Câu này đã sai <b>" + item.wrongs + " lần</b>" : "")
+    : "Đã đúng <b style='color:var(--good)'>" + state.correctCount + "</b> câu";
+  if (state.mode === "exam"){
+    var spans = $("q-ladder").children;
+    for (var i = 0; i < spans.length; i++){
+      spans[i].className = i < state.idx ? "done" : (i === state.idx ? "now" : "");
+    }
+  }
+  $("q-tag").textContent = item.src + " · " + SET_NAMES[item.set];
+  $("q-text").textContent = item.q;
+  var box = $("q-opts"); box.innerHTML = "";
+  item.opts.forEach(function(text, i){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "opt";
+    var l = document.createElement("span"); l.className = "letter"; l.textContent = LETTERS[i];
+    var t = document.createElement("span"); t.textContent = text;
+    b.appendChild(l); b.appendChild(t);
+    b.addEventListener("click", function(){ pick(i, b); });
+    box.appendChild(b);
+  });
+  var ex = $("q-explain"); ex.classList.add("hidden"); ex.className = "explain hidden";
+  $("btn-next").classList.add("hidden");
+  say("Câu " + (state.idx + 1) + " trên " + total + ": " + item.q);
+}
+
+function markCorrect(btn){
+  btn.classList.add("correct");
+  var opts = $("q-opts").children;
+  for (var i = 0; i < opts.length; i++){ opts[i].classList.add("locked"); if (opts[i] !== btn) opts[i].classList.add("dim"); }
+}
+function showExplain(ok, item){
+  var ex = $("q-explain");
+  ex.className = "explain" + (ok ? "" : " bad");
+  ex.innerHTML = "";
+  var h = document.createElement("span"); h.className = "eh";
+  h.textContent = ok ? "Đúng rồi. Giải thích:" : "Chưa đúng — đáp án đúng là " + LETTERS[item.correctIdx] + ". Vì sao:";
+  var p = document.createElement("span"); p.textContent = item.exp;
+  ex.appendChild(h); ex.appendChild(p);
+  ex.classList.remove("hidden");
+}
+
+function pick(i, btn){
+  if (state.locked || state.finished) return;
+  var item = cur();
+  var ok = i === item.correctIdx;
+  if (state.mode === "exam"){
+    state.locked = true;
+    btn.classList.add("picked"); sndPick();
+    setTimeout(function(){
+      btn.classList.remove("picked");
+      if (ok){
+        markCorrect(btn); sndCorrect();
+        state.correctCount++;
+        saveProgressAfterAnswer(true);
+        $("q-bar").style.width = ((state.idx + 1) / state.list.length * 100) + "%";
+        say("Đúng.");
+        setTimeout(nextOrFinish, 950);
+      } else {
+        state.totalWrongs++; item.wrongs++;
+        btn.classList.add("wrong");
+        var opts = $("q-opts").children;
+        opts[item.correctIdx].classList.add("correct");
+        for (var k = 0; k < opts.length; k++) opts[k].classList.add("locked");
+        sndWrong();
+        showExplain(false, item);
+        say("Sai. Đáp án đúng là " + LETTERS[item.correctIdx] + ".");
+        setTimeout(function(){ finishExam(false); }, 2600);
+      }
+    }, 650);
+  } else {
+    // Luyện tập: sai thì ở lại câu, đúng mới qua
+    if (!ok){
+      item.wrongs++; state.totalWrongs++;
+      saveProgressAfterAnswer(false);
+      btn.classList.add("wrong", "shake");
+      btn.disabled = true;
+      sndWrong();
+      showExplain(false, item);
+      $("q-wrong").innerHTML = "Câu này đã sai <b>" + item.wrongs + " lần</b>";
+      say("Chưa đúng. Đáp án đúng là " + LETTERS[item.correctIdx] + ". Hãy chọn lại.");
+      setTimeout(function(){ btn.classList.remove("shake"); }, 500);
+    } else {
+      state.locked = true;
+      markCorrect(btn); sndCorrect();
+      state.correctCount++;
+      saveProgressAfterAnswer(true);
+      showExplain(true, item);
+      var nb = $("btn-next");
+      nb.textContent = state.idx === state.list.length - 1 ? "Xem kết quả" : "Câu tiếp theo";
+      nb.classList.remove("hidden");
+      say("Đúng rồi.");
+    }
+  }
+}
+function nextOrFinish(){
+  if (state.idx >= state.list.length - 1){
+    if (state.mode === "exam") finishExam(true); else finishPractice();
+  } else { state.idx++; renderQuestion(); }
+}
+
+/* ---------------- Kết quả ---------------- */
+var ICON_TROPHY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a1 1 0 0 0-1 1c0 2 1.5 3.5 4 3.5"/><path d="M17 6h3a1 1 0 0 1 1 1c0 2-1.5 3.5-4 3.5"/></svg>';
+var ICON_STOP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 3"/></svg>';
+var ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>';
+
+function statHTML(pairs){
+  return pairs.map(function(p){
+    return '<div class="stat"><div class="n">' + p[0] + '</div><div class="l">' + p[1] + "</div></div>";
+  }).join("");
+}
+function finishExam(won){
+  state.finished = true;
+  sendScoreAndClear(won ? "Thắng" : "Dừng ở câu " + (state.idx + 1));
+  show("result");
+  var total = state.list.length;
+  var icon = $("r-icon"), title = $("r-title"), desc = $("r-desc");
+  icon.classList.toggle("lose", !won);
+  icon.innerHTML = won ? ICON_TROPHY : ICON_STOP;
+  title.className = won ? "win" : "";
+  if (won){
+    title.textContent = "CHIẾN THẮNG!";
+    desc.innerHTML = "Bạn đã trả lời đúng <b>cả " + total + " câu</b> ở chế độ Thi mà không dùng bất kỳ trợ giúp nào. Phần chu diên và hình vuông logic coi như đã nắm chắc.";
+    $("r-stats").innerHTML = statHTML([[total + "/" + total, "Câu trả lời đúng"], ["0", "Câu sai — đúng hết mới thắng được"]]);
+    $("r-review-wrap").classList.add("hidden");
+    fwStart(); fanfare();
+    say("Chiến thắng! Bạn đã đúng cả " + total + " câu.");
+  } else {
+    title.textContent = "Dừng cuộc chơi ở câu " + (state.idx + 1);
+    var item = cur();
+    desc.innerHTML = "Chế độ Thi không có trợ giúp nên sai một câu là dừng. Câu vừa rồi đáp án đúng là <b>" +
+      LETTERS[item.correctIdx] + ". " + item.opts[item.correctIdx] + "</b>. Muốn ôn kỹ câu này, qua chế độ Luyện tập làm lại — sai ở đó sẽ có giải thích và bắt làm đúng mới qua câu.";
+    $("r-stats").innerHTML = statHTML([[state.correctCount + "/" + total, "Câu đã trả lời đúng"], ["Câu " + (state.idx + 1), "Câu dừng cuộc chơi · " + item.src]]);
+    $("r-review-wrap").classList.add("hidden");
+    say("Dừng cuộc chơi ở câu " + (state.idx + 1) + ". Đã đúng " + state.correctCount + " câu.");
+  }
+}
+function finishPractice(){
+  state.finished = true;
+  sendScoreAndClear("Hoàn thành");
+  show("result");
+  var total = state.list.length;
+  var weak = state.list.filter(function(it){ return it.wrongs > 0; });
+  var icon = $("r-icon");
+  icon.classList.remove("lose"); icon.innerHTML = ICON_CHECK;
+  var title = $("r-title"); title.className = "win";
+  title.textContent = "Hoàn thành luyện tập!";
+  $("r-desc").innerHTML = "Bạn đã làm đúng hết <b>" + total + " câu</b> (chỉ bấm đúng mới qua câu được). Tổng số lần bấm sai trong buổi: <b>" + state.totalWrongs + " lần</b>." +
+    (weak.length ? " Các câu từng bấm sai được liệt kê bên dưới để bạn ôn lại." : " Không câu nào phải bấm lại — phần này bạn nắm chắc rồi.");
+  $("r-stats").innerHTML = statHTML([[total, "Câu đã hoàn thành"], [state.totalWrongs, "Tổng số lần bấm sai"], [weak.length, "Câu từng bấm sai"], [total - weak.length, "Câu đúng ngay lần đầu"]]);
+  if (weak.length){
+    $("r-review-wrap").classList.remove("hidden");
+    $("r-review").innerHTML = weak.map(function(it){
+      return '<div class="review-item"><div class="rq">' + escapeHTML(it.q) + '</div>' +
+        '<div class="ra">Đáp án đúng: ' + LETTERS[it.correctIdx] + ". " + escapeHTML(it.opts[it.correctIdx]) + "</div>" +
+        '<div class="rm">' + escapeHTML(it.src) + " · đã bấm sai " + it.wrongs + " lần</div></div>";
+    }).join("");
+  } else $("r-review-wrap").classList.add("hidden");
+  sndCorrect();
+  say("Hoàn thành luyện tập. Tổng số lần bấm sai: " + state.totalWrongs + ".");
+}
+function escapeHTML(s){
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/* ---------------- Sự kiện ---------------- */
+document.querySelectorAll(".scope-btn").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll(".scope-btn").forEach(function(x){ x.setAttribute("aria-pressed", "false"); });
+    b.setAttribute("aria-pressed", "true");
+    state.scope = b.getAttribute("data-scope");
+    sndPick();
+    renderResumeArea();
+    fetchSheetsProgress();
+  });
+});
+$("btn-exam").addEventListener("click", function(){ audio(); startGame("exam"); });
+$("btn-practice").addEventListener("click", function(){ audio(); startGame("practice"); });
+$("btn-next").addEventListener("click", nextOrFinish);
+$("btn-quit").addEventListener("click", function(){ state.finished = true; fwStop(); show("home"); renderResumeArea(); fetchScores(); });
+$("btn-again").addEventListener("click", function(){ startGame(state.mode); });
+$("btn-home").addEventListener("click", function(){ fwStop(); show("home"); renderResumeArea(); fetchSheetsProgress(); fetchScores(); });
+$("lock-form").addEventListener("submit", function(e){ e.preventDefault(); audio(); tryUnlock(); });
+if (unlocked){ show("home"); initSync(); }
+else { show("lock"); var li = $("lock-input"); if (li) li.focus(); }
+window.addEventListener("resize", function(){
+  if (fw.run){ var cv = $("fw"); cv.width = window.innerWidth; cv.height = window.innerHeight; }
+});
+</script>
+</body>
+</html>
